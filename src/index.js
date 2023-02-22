@@ -6,8 +6,9 @@ El servidor de producción está petado.
 Aquí, tu compi junior Isma te ha dado una pista.
 https://dmitripavlutin.com/access-object-properties-javascript/
 */
+import { resetBorder } from "./modules/resetBorder.js";
 
-const opciones = ["rock", "paper", "scissors"]; /* Cargamos todas las opciones disponibles */
+const OPCIONES = ["rock", "paper", "scissors"]; /* Cargamos todas las OPCIONES disponibles */
 let playerSelection;
 let cpuSelection;
 
@@ -16,43 +17,32 @@ const [rockButton, paperButton, scissorsButton] = /* Seleccionamos la clase play
 const cpuImage = document.querySelector(".cpu img"); /* Con esta línea cargamos la imagen */
 const result = document.querySelector(".result");
 
-rockButton.addEventListener("click", () => { /* Este evento controla cuando pulsamos la opción piedra */
+const onButtonPressed = (index, button) => {
   resetBorder();
-  playerSelection = choosePlayerOption(0);
-  rockButton.classList.add("selected");
+  playerSelection = choosePlayerOption(index);
+  button.classList.add("selected");
   cpuSelection = chooseCPUOption();
-  show();
-});
+  checkWinner();
+};
 
-paperButton.addEventListener("click", () => { /* Este evento controla cuando pulsamos la opción papel */
-  resetBorder();
-  playerSelection = choosePlayerOption(1);
-  paperButton.classList.add("selected");
-  cpuSelection = chooseCPUOption();
-  show();
-});
+/* Estos eventos controlan cuando eliges una funcion */
+rockButton.addEventListener("click", () => onButtonPressed(0, rockButton));
+paperButton.addEventListener("click", () => onButtonPressed(1, paperButton));
+scissorsButton.addEventListener("click", () => onButtonPressed(2, scissorsButton));
 
-scissorsButton.addEventListener("click", () => { /* Este evento controla cuando pulsamos la opción tijeras */
-  resetBorder();
-  playerSelection = choosePlayerOption(2);
-  scissorsButton.classList.add("selected");
-  cpuSelection = chooseCPUOption();
-  show();
-});
+/* Retornamos la opción que haya escogido el usuario */
+const choosePlayerOption = (index) => OPCIONES[index];
 
-function choosePlayerOption(index) { /* Retornamos la opción que haya escogido el usuario */
-  return opciones[index];
-}
-
-function chooseCPUOption() { /* Esta funcion selecciona la imagen de lo que haya elegido la CPU */
+/* Esta funcion selecciona la imagen de lo que haya elegido la CPU */
+const chooseCPUOption = () => {
   const randomIndex = Math.floor(Math.random() * 3);
-  const imageName = opciones[randomIndex];
+  const imageName = OPCIONES[randomIndex];
   cpuImage.src = "images/" + imageName + ".png";
-  return opciones[randomIndex];
-}
+  return OPCIONES[randomIndex];
+};
 
-function show() { /* Esta función contempla todas las opciones disponibles del juego, pero es muy larga. ¿Puedes reducirla? */
-  let gameResult;
+/* Esta función contempla todas las OPCIONES disponibles del juego, pero es muy larga. ¿Puedes reducirla? */
+const checkWinner = () => {
   // Caso de empate
   if (cpuSelection === playerSelection) { /* Caso de empate */
     result.textContent = "Has empatado";
@@ -75,10 +65,4 @@ function show() { /* Esta función contempla todas las opciones disponibles del 
       result.textContent = "Ganaste :)";
     }
   }
-}
-
-function resetBorder() { /* Esta función quitará los estilos de los botones */
-  paperButton.classList.remove("selected");
-  scissorsButton.classList.remove("selected");
-  rockButton.classList.remove("selected");
-}
+};
